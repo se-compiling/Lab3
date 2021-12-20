@@ -27,6 +27,7 @@ public class BinaryInst extends Inst{
                     case Sub -> "sub i32 ";
                     case Mul -> "mul i32 ";
                     case Div -> "sdiv i32 ";
+                    case Mod -> "srem i32 ";
                     case Lt -> "icmp slt " + this.getOperand(0).getType() + " ";
                     case Le -> "icmp sle " + this.getOperand(0).getType() + " ";
                     case Ge -> "icmp sge " + this.getOperand(0).getType() + " ";

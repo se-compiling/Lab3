@@ -38,6 +38,7 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     private Function func = new Function("main",new FunctionType(i32,new ArrayList<>(Collections.emptyList())),false);
 
     private String[] SysYFunc={"getint","getch","getarray","putint","putch","putarray"};
+    private boolean[] isSysYDef={false,false,false,false,false,false};
 
 
     @Override public Void visitProgram(miniSysYParser.ProgramContext ctx) {
@@ -159,9 +160,9 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
         Value lval = curVal;
         visit(ctx.exp());
         Value rval = curVal;
-        System.out.println("赋值检查点");
-        System.out.println(rval.getName());
-        System.out.println(rval.getType());
+        //System.out.println("赋值检查点");
+        //System.out.println(rval.getName());
+        //System.out.println(rval.getType());
         if(rval.getType().isIntegerType()){
             builder.createStore(BB,rval,lval);
         }
@@ -364,35 +365,35 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
             //System.out.println("isSysY检查点");
             switch (calledFunc.name){
                 case "getint" ->{
-                    if(!calledFunc.isDef()){
+                    if(!isSysYDef[0]){
+                        System.out.println(isSysYDef[0]);
                         Const.IR.append("declare i32 @getint()\n");
-                        calledFunc.setDef(true);
+                        isSysYDef[0]=true;
                     }
                     //System.out.println("getint检查点");
                     curVal = builder.createCall(BB,calledFunc,params);
                 }
                 case "getch" ->{
-                    if(!calledFunc.isDef()){
-                        Const.IR.append("declare i32 @getint()\n");
-                        calledFunc.setDef(true);
+                    if(!isSysYDef[1]){
+                        Const.IR.append("declare i32 @getch()\n");
+                        isSysYDef[1]=true;
                     }
-                    Const.IR.append("declare i32 @getch()\n");
                     curVal = builder.createCall(BB,calledFunc,params);
                 }case "getarray" ->{
                     //Const.IR.append("declare i32 @getarray()\n")
                 }case "putint" ->{
-                    if(!calledFunc.isDef()){
+                    if(!isSysYDef[3]){
                         Const.IR.append("declare void @putint(i32)\n");
-                        calledFunc.setDef(true);
+                        isSysYDef[3]=true;
                     }
                     //System.out.println("putint检查点");
                     visit(ctx.funcRParams());
                     params.add(curVal);
                     curVal = builder.createCall(BB,calledFunc,params);
                 }case "putch" ->{
-                    if(!calledFunc.isDef()){
+                    if(!isSysYDef[4]){
                         Const.IR.append("declare void @putch(i32)\n");
-                        calledFunc.setDef(true);
+                        isSysYDef[4]=true;
                     }
                     visit(ctx.funcRParams());
                     params.add(curVal);
