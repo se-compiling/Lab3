@@ -194,6 +194,7 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
         builder.createBr(nextBlock,BB);
         if(ctx.ELSE()!=null) {
             BB=elseBlock;
+            visitStmt(ctx.stmt(1));
             builder.createBr(nextBlock,BB);
         }
         BB=nextBlock;

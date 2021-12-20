@@ -1,10 +1,14 @@
 int main() {
-    int a1 = getint();
-    int a2 = getint();
-    int a3 = getint(), a4 = 4;
-    int a5 = getch();
-    putint(a5);
-    putch(10);
-    putint(a1 + a2 + a3 - a4);
+    int a, b;
+    a = 070;
+    b = 0x4;
+    a = a - - 4 + + b;
+    if (+-!!!a) {
+        a = - - -1;
+    }
+    else {
+        a = 0 + + b;
+    }
+    putint(a);
     return 0;
 }
