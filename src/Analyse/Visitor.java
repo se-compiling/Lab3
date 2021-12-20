@@ -174,7 +174,6 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     @Override public Void visitExp_stmt(miniSysYParser.Exp_stmtContext ctx) { return super.visitExp_stmt(ctx); }
 
     @Override public Void visitIf_stmt(miniSysYParser.If_stmtContext ctx) {
-        BasicBlock parent =BB;
         BasicBlock ifBlock = new BasicBlock("if_then_"+func.getBlockNum());
         func.insertBlock(ifBlock);
         BasicBlock nextBlock = new BasicBlock("next_"+func.getBlockNum());
@@ -202,8 +201,21 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     }
 
     @Override public Void visitWhile_stmt(miniSysYParser.While_stmtContext ctx) {
-
-        return super.visitWhile_stmt(ctx);
+        BasicBlock loopBlock = new BasicBlock("loop_"+func.getBlockNum());
+        BasicBlock nextBlock = new BasicBlock("next_"+func.getBlockNum());
+        BasicBlock condBlock = new BasicBlock("cond_"+func.getBlockNum());
+        func.insertBlock(condBlock);
+        func.insertBlock(loopBlock);
+        func.insertBlock(nextBlock);
+        builder.createBr(condBlock,BB);
+        ctx.cond().ifBlock=loopBlock;
+        ctx.cond().elseBlock=nextBlock;
+        BB=condBlock;
+        visit(ctx.cond());
+        BB=loopBlock;
+        visit(ctx.stmt());
+        BB=nextBlock;
+        return null;
     }
 
     @Override public Void visitBreak_stmt(miniSysYParser.Break_stmtContext ctx) { return super.visitBreak_stmt(ctx); }

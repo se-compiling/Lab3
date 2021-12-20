@@ -1,14 +1,18 @@
 int main() {
-    int a, b;
-    a = 070;
-    b = 0x4;
-    a = a - - 4 + + b;
-    if (+-!!!a) {
-        a = - - -1;
+    const int ch = 48;
+    int i = 1;
+    while (i < 12) {
+        int j = 0;
+        while (j < 2 * i - 1) {
+            if (j % 3 == 1) {
+                putch(ch + 1);
+            } else {
+                putch(ch);
+            }
+            j = j + 1;
+        }
+        putch(10);
+        i = i + 1;
     }
-    else {
-        a = 0 + + b;
-    }
-    putint(a);
     return 0;
 }
