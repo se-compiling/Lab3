@@ -44,11 +44,13 @@ public class Builder {
     }
 
     public TerminatorInst.BrInst createBr(BasicBlock ifBlock,BasicBlock curBB){
+        if((!curBB.instList.isEmpty())&&(curBB.instList.getLast().isRetInst()||curBB.instList.getLast().isBrInst()))return null;
         TerminatorInst.BrInst br = new TerminatorInst.BrInst(ifBlock);
         curBB.insertInst(br);
         return br;
     }
     public TerminatorInst.BrInst createBr(Value cond,BasicBlock ifBlock,BasicBlock elseBlock,BasicBlock BB){
+        if((!BB.instList.isEmpty())&&(BB.instList.getLast().isRetInst()||BB.instList.getLast().isBrInst()))return null;
         TerminatorInst.BrInst br = new TerminatorInst.BrInst(cond,ifBlock,elseBlock);
         BB.insertInst(br);
         return br;

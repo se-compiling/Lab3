@@ -45,6 +45,12 @@ public class Inst extends User {
         return this.tag.getIndex() >= Tag.Alloca.getIndex()
                 && this.tag.getIndex() <= Tag.Phi.getIndex();
     }
+    public boolean isRetInst(){
+        return this instanceof TerminatorInst.RetInst;
+    }
+    public boolean isBrInst(){
+        return this instanceof TerminatorInst.BrInst;
+    }
 
 }
 

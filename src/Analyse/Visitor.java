@@ -35,6 +35,8 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     private Builder builder = Builder.getInstance();
     private SymbolTable ST=new SymbolTable();
     private BasicBlock BB = new BasicBlock();
+    private BasicBlock continue_cond = new BasicBlock();
+    private BasicBlock break_next = new BasicBlock();
     private Function func = new Function("main",new FunctionType(i32,new ArrayList<>(Collections.emptyList())),false);
 
     private String[] SysYFunc={"getint","getch","getarray","putint","putch","putarray"};
@@ -207,6 +209,8 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
         func.insertBlock(loopBlock);
         BasicBlock nextBlock = new BasicBlock("next_"+func.getBlockNum());
         func.insertBlock(nextBlock);
+        continue_cond=condBlock;
+        break_next=nextBlock;
         builder.createBr(condBlock,BB);
         ctx.cond().ifBlock=loopBlock;
         ctx.cond().elseBlock=nextBlock;
@@ -220,20 +224,26 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     }
 
     @Override public Void visitBreak_stmt(miniSysYParser.Break_stmtContext ctx) {
+        BasicBlock parent=BB;
         BasicBlock breakBlock = new BasicBlock("break_"+func.getBlockNum());
         func.insertBlock(breakBlock);
         builder.createBr(breakBlock,BB);
+        BB=breakBlock;
+        builder.createBr(break_next,BB);
+        BB=parent;
         return null;
     }
 
     @Override public Void visitContinue_stmt(miniSysYParser.Continue_stmtContext ctx) {
-        //System.out.println("continue检查点");
-        //BasicBlock parent=BB;
+        System.out.println("continue检查点");
+        BasicBlock parent=BB;
         BasicBlock continueBlock = new BasicBlock("continue_"+func.getBlockNum());
         func.insertBlock(continueBlock);
         builder.createBr(continueBlock,BB);
-        //BB=continueBlock;
-        //builder.createBr(parent,BB);
+        BB=continueBlock;
+        builder.createBr(continue_cond,BB);
+        BB=parent;
+        System.out.println(BB.getName());
         //BB=parent;
         return null;
     }
