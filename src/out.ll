@@ -1,75 +1,65 @@
+declare i32 @getint()
+declare void @putint(i32)
 declare void @putch(i32)
 define dso_local i32 @main() {
   %x0 = alloca i32
-  store i32 1, i32*  %x0
+  %x3 = alloca i32
+  %x5 = alloca i32
+  %x1 = call i32 @getint()
+  store i32 %x1, i32*  %x0
+  store i32 0, i32*  %x3
+  store i32 0, i32*  %x5
   br label  %cond_0
 
 
 cond_0:
-  %x3 = load i32, i32*  %x0
-  %x4 = icmp slt i32 %x3,12
-  br i1 %x4,label  %LAnd_jump_3,label  %next_0 
+  %x8 = load i32, i32*  %x3
+  %x9 = load i32, i32*  %x0
+  %x10 = icmp slt i32 %x8,%x9
+  br i1 %x10,label  %LAnd_jump_3,label  %next_2 
 
 
-loop_0:
-  %x7 = alloca i32
-  store i32 0, i32*  %x7
-  br label  %cond_4
+loop_1:
+  %x13 = load i32, i32*  %x3
+  %x14 = srem i32 %x13,2
+  %x15 = icmp eq i32 %x14,0
+  br i1 %x15,label  %LAnd_jump_6,label  %next_5 
 
 
-next_0:
+next_2:
   ret i32 0
 
 LAnd_jump_3:
-  br label  %loop_0
+  br label  %loop_1
 
 
-cond_4:
-  %x10 = load i32, i32*  %x7
-  %x11 = load i32, i32*  %x0
-  %x12 = mul i32 2,%x11
-  %x13 = sub i32 %x12,1
-  %x14 = icmp slt i32 %x10,%x13
-  br i1 %x14,label  %LAnd_jump_7,label  %next_4 
+if_then_4:
+  %x18 = load i32, i32*  %x3
+  %x19 = add i32 %x18,1
+  store i32 %x19, i32*  %x3
+  br label  %continue_7
+
+  br label  %next_5
 
 
-loop_4:
-  %x17 = load i32, i32*  %x7
-  %x18 = sdiv i32 %x17,3
-  %x19 = mul i32 %x18,3
-  %x20 = sub i32 %x17,%x19
-  %x21 = icmp eq i32 %x20,1
-  br i1 %x21,label  %LAnd_jump_11,label  %else_10 
-
-
-next_4:
+next_5:
+  %x23 = load i32, i32*  %x3
+  %x24 = add i32 %x23,1
+  store i32 %x24, i32*  %x3
+  %x26 = load i32, i32*  %x5
+  %x27 = load i32, i32*  %x3
+  %x28 = add i32 %x26,%x27
+  store i32 %x28, i32*  %x5
+  %x30 = load i32, i32*  %x5
+  call void @putint(i32 %x30)
   call void @putch(i32 10)
-  %x33 = load i32, i32*  %x0
-  %x34 = add i32 %x33,1
-  store i32 %x34, i32*  %x0
-
-LAnd_jump_7:
-  br label  %loop_4
+  br label  %cond_0
 
 
-if_then_8:
-  %x24 = add i32 48,1
-  call void @putch(i32 %x24)
-  br label  %next_9
+LAnd_jump_6:
+  br label  %if_then_4
 
 
-next_9:
-  %x29 = load i32, i32*  %x7
-  %x30 = add i32 %x29,1
-  store i32 %x30, i32*  %x7
-
-else_10:
-  call void @putch(i32 48)
-  br label  %next_9
-
-
-LAnd_jump_11:
-  br label  %if_then_8
-
+continue_7:
 
 }

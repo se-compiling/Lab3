@@ -201,11 +201,11 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     }
 
     @Override public Void visitWhile_stmt(miniSysYParser.While_stmtContext ctx) {
-        BasicBlock loopBlock = new BasicBlock("loop_"+func.getBlockNum());
-        BasicBlock nextBlock = new BasicBlock("next_"+func.getBlockNum());
         BasicBlock condBlock = new BasicBlock("cond_"+func.getBlockNum());
         func.insertBlock(condBlock);
+        BasicBlock loopBlock = new BasicBlock("loop_"+func.getBlockNum());
         func.insertBlock(loopBlock);
+        BasicBlock nextBlock = new BasicBlock("next_"+func.getBlockNum());
         func.insertBlock(nextBlock);
         builder.createBr(condBlock,BB);
         ctx.cond().ifBlock=loopBlock;
@@ -214,13 +214,29 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
         visit(ctx.cond());
         BB=loopBlock;
         visit(ctx.stmt());
+        builder.createBr(condBlock,BB);
         BB=nextBlock;
         return null;
     }
 
-    @Override public Void visitBreak_stmt(miniSysYParser.Break_stmtContext ctx) { return super.visitBreak_stmt(ctx); }
+    @Override public Void visitBreak_stmt(miniSysYParser.Break_stmtContext ctx) {
+        BasicBlock breakBlock = new BasicBlock("break_"+func.getBlockNum());
+        func.insertBlock(breakBlock);
+        builder.createBr(breakBlock,BB);
+        return null;
+    }
 
-    @Override public Void visitContinue_stmt(miniSysYParser.Continue_stmtContext ctx) { return super.visitContinue_stmt(ctx); }
+    @Override public Void visitContinue_stmt(miniSysYParser.Continue_stmtContext ctx) {
+        //System.out.println("continue检查点");
+        //BasicBlock parent=BB;
+        BasicBlock continueBlock = new BasicBlock("continue_"+func.getBlockNum());
+        func.insertBlock(continueBlock);
+        builder.createBr(continueBlock,BB);
+        //BB=continueBlock;
+        //builder.createBr(parent,BB);
+        //BB=parent;
+        return null;
+    }
 
     @Override public Void visitReturn_stmt(miniSysYParser.Return_stmtContext ctx) {
         if(ctx.exp()!=null) {
@@ -379,7 +395,7 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
             switch (calledFunc.name){
                 case "getint" ->{
                     if(!isSysYDef[0]){
-                        System.out.println(isSysYDef[0]);
+                        //System.out.println(isSysYDef[0]);
                         Const.IR.append("declare i32 @getint()\n");
                         isSysYDef[0]=true;
                     }
@@ -578,7 +594,6 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
             isRel = true;
             visit(exp);
             if (isRel) {
-
                 curVal = builder.createBinary(BB,Tag.Ne, curVal, C0);
                 isRel = false;
             }
