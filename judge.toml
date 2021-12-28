@@ -1,4 +1,4 @@
-[jobs.lab6]
+[jobs.short_circuit]
 image = { source = "dockerfile", path = "."}
 
 run = [
